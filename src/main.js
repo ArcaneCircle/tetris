@@ -28,6 +28,7 @@ const canvas = document.getElementById("playfield"),
   gameArea = document.getElementById("game-area"),
   overlay = document.getElementById("overlay"),
   sensibilitySelect = document.getElementById("sencontrol"),
+  musicSelect = document.getElementById("musiccontrol"),
   menu = document.getElementById("menu");
 
 const width = canvas.width,
@@ -642,7 +643,7 @@ function start() {
     started = true;
     setLevel(level);
     sfxmusic.rate(1);
-    if (!sfxmusic.playing()) {
+    if (!sfxmusic.playing() && musicSelect.checked ) {
       sfxmusic.play();
     }
   }
@@ -652,7 +653,9 @@ function onClick() {
   if (paused) {
     hideMenu();
     paused = false;
-    if (started) sfxmusic.play();
+    if (started && musicSelect.checked ) {
+      sfxmusic.play();
+    }
   } else if (started) {
     rotate(playfield, falling, true);
   }
@@ -722,6 +725,7 @@ function rePaint(refresh) {
 
 function saveGame() {
   localStorage.sensibility = sensibilitySelect.value;
+  localStorage.music = musicSelect.checked;
   if (started) {
     localStorage.playfield = JSON.stringify(playfield);
     localStorage.falling = JSON.stringify(falling);
@@ -732,6 +736,10 @@ function saveGame() {
 
 function restoreGame() {
   let sensibility = Number(localStorage.sensibility) || 5;
+  let musicDisabled = ( localStorage.music === "false" );
+  if (musicDisabled) {
+    musicSelect.checked = false;
+  }
   scoreContainer.innerHTML = score = Number(localStorage.score) || 0;
   level = Math.floor((score + 100) / 100);
   if (localStorage.playfield) {
