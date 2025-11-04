@@ -8,13 +8,15 @@ import levelUrl from "/assets/sounds/level.mp3";
 import "@webxdc/highscores";
 import { Howl } from "howler";
 
+const minMsBetweenDrops = 400;
 let game_interval = 0,
   score = 0,
   level = 1,
   newlevel = 1,
   speed,
   started = false,
-  paused = false;
+  paused = false,
+  lastDropAt = null;
 let playfield = new Array(22),
   dirty_rows = new Array(20),
   dirty = false;
@@ -457,6 +459,13 @@ function spawn_rand() {
   spawn(randomChoice("IJLOSTZ"));
 }
 
+function drop(field, piece, render) {
+  if (Date.now() - lastDropAt > minMsBetweenDrops) {
+    lastDropAt = Date.now();
+    while (fall(field, piece, render));
+  }
+}
+
 function fall(field, piece, render) {
   if (paused) return;
   if (piece.shape.length != 4) return;
@@ -811,7 +820,7 @@ function handleTouchMove(evt) {
       xtrigger = 0;
       if (dtrigger < sensibility) dtrigger++;
       else dtrigger = 0;
-      if (dtrigger == sensibility) fall(playfield, falling, true);
+      if (dtrigger == sensibility) drop(playfield, falling, true);
     }
   }
 }
@@ -836,7 +845,7 @@ function onKeyDown(event) {
   } else if (started && !paused) {
     switch (keyCode) {
       case KeyCodes.ARROWD:
-        fall(playfield, falling, true);
+        drop(playfield, falling, true);
         break;
       case KeyCodes.ARROWL:
         move(-1, playfield, falling, true);
