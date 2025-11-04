@@ -643,7 +643,7 @@ function start() {
     started = true;
     setLevel(level);
     sfxmusic.rate(1);
-    if (!sfxmusic.playing() && musicSelect.checked ) {
+    if (!sfxmusic.playing() && musicSelect.checked) {
       sfxmusic.play();
     }
   }
@@ -653,7 +653,7 @@ function onClick() {
   if (paused) {
     hideMenu();
     paused = false;
-    if (started && musicSelect.checked ) {
+    if (started && musicSelect.checked) {
       sfxmusic.play();
     }
   } else if (started) {
@@ -736,7 +736,7 @@ function saveGame() {
 
 function restoreGame() {
   let sensibility = Number(localStorage.sensibility) || 5;
-  let musicDisabled = ( localStorage.music === "false" );
+  let musicDisabled = localStorage.music === "false";
   if (musicDisabled) {
     musicSelect.checked = false;
   }
